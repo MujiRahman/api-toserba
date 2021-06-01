@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
-const User = require('../models/auth')
-const secret = "$2b$10$OstRst1LWEfDyKEGdKcOKO"
+const User = require('../models/User')
+require('dotenv/config')
 
 exports.register = async (req, res) => {
     // mengatasi error lokal
@@ -12,15 +12,6 @@ exports.register = async (req, res) => {
             message: 'inputan yang anda masukan salah mohon koreksi ulang',
             data: errors.array() });
     }
-
-    // mengecek apakah nama udah ada apa belom
-    // const namaExist = await User.findOne({nama: req.body.nama});
-    // if(namaExist){
-    //     return res.status(400).json({
-    //         status: res.statusCode,
-    //         message: 'Nama Sudah digunakan !'
-    //     })
-    // }
 
     // mengecek apakah email udah ada apa belom
     const emailExist = await User.findOne({email: req.body.email});
@@ -73,9 +64,10 @@ exports.login = async (req, res) => {
     })
 
     // membuat token menggunkan JWT
-    const token = jwt.sign({ _id: user._id }, secret,{ expiresIn: '24h'})
+    const token = jwt.sign({ _id: user._id }, process.env.secret,{ expiresIn: '24h'})
     res.header('auth-token', token).json({
         status: res.statusCode,
+        user: user,
         message: 'Selamat anda berhasil login',
         token: token
     })

@@ -2,7 +2,7 @@ const express = require ('express');
 const router = express.Router();
 const {body} = require('express-validator');
 
-const authControler = require('../controler/auth');
+const authControler = require('../controler/user');
 
 router.post('/register', [
     body('nama').isLength({max:20}).withMessage('nama anda kepanjangan woi!!!'),

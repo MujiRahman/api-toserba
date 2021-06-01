@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
+const { ObjectId } = mongoose.Schema;
 
 const Product = new schema({
-    namaBarang: {
+    title: {
         type: String,
         required: true,
         max: 100
@@ -11,19 +12,23 @@ const Product = new schema({
         type: Number,
         required: true
     },
-    detailBarang: {
+    body: {
         type: String,
         required: true,
         min: 4
     },
-    image: {
-        type: String,
-        required: true
-    },
+    imageId: [{
+        type: ObjectId,
+        required: 'Image'
+    }],
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    userId:{
+        type: ObjectId,
+        ref: 'User'
+    },
 },{
     timestamps: true
 });

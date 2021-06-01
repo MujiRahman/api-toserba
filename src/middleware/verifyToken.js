@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const secret = "$2b$10$OstRst1LWEfDyKEGdKcOKO"
+require('dotenv/config')
 
 const verifyToken = (req, res, next) => {
     const token = req.header('auth-token')
@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
         message: 'Access Denied !'
     })
     try {
-        const verified = jwt.verify(token, secret)        
+        const verified = jwt.verify(token, process.env.secret)        
         req.user = verified
         next() 
 
