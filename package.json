@@ -12,9 +12,12 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "cjs": "0.0.11",
+    "cjs-loader": "^0.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^6.10.0",
+    "fs-extra": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",
     "multer": "^1.4.2",

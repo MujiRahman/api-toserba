@@ -4,21 +4,21 @@ const Product = require("../models/product");
 const fs = require("fs");
 const User = require("../models/User");
 const Image = require("../models/Image");
-const { error } = require("console");
+// const { error } = require("console");
 // const verifyToken = require("../middleware/verifyToken"); 
 // const Image = require("../models/Image");
 
 exports.createProduct = async (req, res, next) => {
     try {
         const errors = validationResult(req);
-        const userId = req.params.userId;
+        const userId = req.user._id;
         const { nama, merek, harga, jumlahBarang, deskripsi} = req.body;
-        if(!errors.isEmpty()){
-            const err = new Error('inputan yang anda masukan salah')
-            err.errorStatus = 400;
-            err.data = errors.array();
-            throw err;
-        }
+        // if(!errors.isEmpty()){
+        //     const err = new Error('inputan yang anda masukan salah')
+        //     err.errorStatus = 400;
+        //     err.data = errors.array();
+        //     throw err;
+        // }
         if (req.files.length > 0) {
             const user = await User.findOne({_id: userId})
             const newProduct = new Product({
@@ -78,7 +78,7 @@ exports.getAllProduct = (req, res, next) => {
 }
 
 exports.getAllProductByUser = (req, res, next) => {
-    const userId = req.params.userId;
+    const userId = req.user._id;
     const currentPage = req.query.page || 1;
     const perPage = req.query.perPage || 3;
     let totalProduct;
@@ -125,7 +125,7 @@ exports.getProductById = async (req, res, next) => {
 
 exports.updateProduct = async (req, res, next) => {
     try {
-            const errors = validationResult(req);
+        const errors = validationResult(req);
 
         if(!errors.isEmpty()){
             const err = new Error('inputan yang anda masukan salah')
@@ -205,6 +205,6 @@ exports.deleteProduct = async (req, res, next) => {
     }
 }
 
-exports.showBanerHero = () => {
+// exports.showBanerHero = () => {
 
-}
+// }

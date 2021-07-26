@@ -1,38 +1,14 @@
 const express = require ('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// const multer = require('multer');
-// const path = require('path');
+
 require('dotenv/config')
 
 const app = express();
 const apiAuth = require('./src/routes/user');
-const apiProduct = require('./src/routes/product');
-
-// const fileStorage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, 'images');
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, new Date().getTime() + '' + file.originalname)
-//     }
-// })
-
-// const fileFilter = (req, file, cb) => {
-//     if(
-//         file.mimetype === 'image/png' ||
-//         file.mimetype === 'image/jpg' ||
-//         file.mimetype === 'image/jpeg'
-//     ) {
-//         cb(null, true);
-//     } else {
-//         cb(null, false);
-//     }
-// }
 
 app.use(bodyParser.json());
-// app.use('/images', express.static(path.join(__dirname, 'images')));
-// app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
+// app.use(bodyParser.urlencoded({ extended: true }))
 
 // mengatasi err cors origin
 app.use((req, res, next) => {
@@ -43,8 +19,6 @@ app.use((req, res, next) => {
 }) 
 
 app.use('/api/user',apiAuth);
-app.use('/api/product',apiProduct);
-
 
 app.use((error, req, res, next) => {
     const status = error.errorStatus || 500;
@@ -54,7 +28,7 @@ app.use((error, req, res, next) => {
     res.status(status).json({message: message, data: data});
 })
 
-mongoose.connect(process.env.DB_CONNECTION1, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
+mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
 .then(()=> {
     app.listen(process.env.PORT, ()=> console.log('conection success'))
 })
