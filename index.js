@@ -1,34 +1,56 @@
 const express = require ('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
-require('dotenv/config')
-
-const app = express();
+const morgan = require('morgan');
+const cors = require('cors')
+const Image = require('./src/models/Image')
 const apiAuth = require('./src/routes/user');
+const apiProduct = require('./src/routes/product');
+const apiDiskusi = require('./src/routes/diskusiProduct');
+const apiSubDiskusi = require('./src/routes/subDiskusiProduct')
+const apiUlasan = require('./src/routes/ulasanProduct')
+const apiOrder = require('./src/routes/order')
+require('dotenv/config')
+const app = express();
+app.use(morgan('dev'))
 
-app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors())
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true}));
 
-// mengatasi err cors origin
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTION');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-}) 
-
+app.use('/images/:fileName', (req,res) => {
+    const file = __dirname + `/images/${req.params.fileName}`;
+    res.sendFile(file)
+} )
+app.use('/imagesById/images/:imageId', async (req,res) => {
+    const gambar = req.params.imageId
+    const image = await Image.findOne({_id: gambar})
+    const file = __dirname + `/${image.imageUrl}`;
+    res.sendFile(file)
+} )
+app.use('/imagesId/:imageId', async (req,res) => {
+    const gambar = req.params.imageId
+    const image = await Image.findOne({_id: gambar})
+    const file = __dirname + `/${image.imageUrl}`;
+    res.sendFile(file)
+} )
 app.use('/api/user',apiAuth);
+app.use('/api/product', apiProduct);
+app.use('/api/diskusi', apiDiskusi);
+app.use('/api/subDiskusi', apiSubDiskusi);
+app.use('/api/ulasan', apiUlasan);
+app.use('/api/order', apiOrder);
 
 app.use((error, req, res, next) => {
     const status = error.errorStatus || 500;
     const message = error.message;
     const data = error.data;
-
     res.status(status).json({message: message, data: data});
 })
 
-mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
+mongoose.connect(process.env.DB_CONNECTION2, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
 .then(()=> {
     app.listen(process.env.PORT, ()=> console.log('conection success'))
 })

@@ -1,38 +1,52 @@
-const Product = require("../models/product");
-const Order = require("../models/Order");
-const User = require("../models/User")
-
-// kranjang
-// proses
-// dikirim
-// sampai
+const Product = require('../models/Product');
+const Order = require('../models/Order');
+const User = require('../models/User');
+const { validationResult } = require('express-validator');
+const e = require('cors');
 
 // client melakukan order barang
-export const addOrder = async ( req, res, next ) => {
+exports.addOrder = async ( req, res, next ) => {
     try {
-        const { nama, jumlahBarang, totalHarga, alamat, note } = req.body;
         const userClient = req.user._id;
-        const productIdAdmin = req.params.productId;
+        const {productId} = req.params;
+        const { namaBarang, jumlahBarang, totalHarga, harga, alamat, note } = req.body;
+        console.log('isi order', req.body)
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                message: 'inputan yang anda masukan salah mohon koreksi ulang',
+                data: errors.array() });
+        }
         const clientOrder = await User.findOne({_id: userClient})
-        const cariProductAdmin =await Product.findOne({_id: productIdAdmin})
-        // const order = await Product.findOne({_id: cariProductAdmin})
-        if (cariProductAdmin.jumlahBarang === 0) {
+        const cariProductAdmin =await Product.findOne({_id: productId})
+        if ( cariProductAdmin.jumlahBarang === 0) {
             res.status(400)
             throw new Error('No order items')
         } else {
-            cariProductAdmin.jumlahBarang - jumlahBarang
-            const newOrder = new Order({
-                nama,
+            cariProductAdmin.jumlahBarang = cariProductAdmin.jumlahBarang - jumlahBarang
+            cariProductAdmin.terjual = cariProductAdmin.terjual + jumlahBarang
+            
+            console.log('isi admin', cariProductAdmin.jumlahBarang,cariProductAdmin.terjual)
+            const newOrder = {
+                namaBarang,
                 jumlahBarang,
                 totalHarga,
                 alamat,
                 note,
+                harga,
+                product: productId,
+                nama: clientOrder.nama,
                 userId: userClient,
-                imageId:  `images/${req.file.filename}`
-            })
+                imageProduct:  `images/${cariProductAdmin.imageId[0]}`
+            }
             const order = await Order.create(newOrder)
             clientOrder.orderId.push({_id: order._id});
-            await cariProductAdmin.userId.save()
+            const userAdmin = cariProductAdmin.userId
+            const userAdm = await User.findOne({_id: userAdmin})
+            userAdm.pesenanId.push({_id: order._id});
+            await userAdm.save()
+            await clientOrder.save()
+            await cariProductAdmin.save()
             res.status(200).json({
                 message: 'order berhasil',
                 data: order
@@ -44,56 +58,34 @@ export const addOrder = async ( req, res, next ) => {
 }
 
 // admin memeriksa apakah ada orderan..
-export const getAllOrder = async (req, res, next) => {
+exports.getAllOrder = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        // const currentPage = req.query.page || 1;
-        // const perPage = req.query.perPage || 3;
-        let totalProduct;
-    
-        const user = await User.findOne({_id: userId})
-        user.orderId.find()
-        res.status(200).json({
-            message: 'data product by user telah berhasil dipanggil',
-            data: user,
-            // total_data: totalProduct,
-            // per_page: parseInt(perPage),
-            // current_page: parseInt(currentPage)
-        })
-        // .countDocuments()
-        // .then( count => {
-        //     totalProduct = count;
-        //     return user.orderId.find()
-        //     .skip((parseInt(currentPage) - 1) * parseInt(perPage))
-        //     .limit(parseInt(perPage));
-        // })
-        // .then( result => {
-        //     res.status(200).json({
-        //         message: 'data product by user telah berhasil dipanggil',
-        //         data: result,
-        //         total_data: totalProduct,
-        //         per_page: parseInt(perPage),
-        //         current_page: parseInt(currentPage)
-        //     })
-        // })
+        const user = await User.findOne({_id: userId}).populate('pesenanId')
+        if (user) {
+            res.status(200).json({
+                message: 'data order telah berhasil dipanggil',
+                data: user.pesenanId ,
+            })
+        } else{
+            res.status(200).json({
+                message: 'data product by user kosong',
+            })
+        }
     } catch (error) {
         next(error)
     }
-    // .catch( err => {
-    //     console.log('isi err get all', err);
-    //     next(err)
-    // })
 }
 
 // admin mengambill 1 data order
-export const getOrderById = async (req, res, next) => {
+exports.getOrderById = async (req, res, next) => {
     try {
-        const order = await Order.findById(req.params.orderId).populate(
-            {path:'userId',
-            select:'name email'}
-        )
-        if (order) {
-            res.json(order)
+        const pesenan = await Order.findById(req.params.pesenanId)
+        if (pesenan) {
+            res.status(200).json({
+                message: 'update sedang dikirim success',
+                data: pesenan
+            })
         } else {
             res.status(404)
             throw new Error('Order not found')
@@ -104,16 +96,16 @@ export const getOrderById = async (req, res, next) => {
 }
 
 // admin memnerima update dan langsung mengirim barangnya
-export const updateOrder = async (req, res, next) => {
+exports.updateOrder = async (req, res, next) => {
     try {
-        const order = req.params.orderId;
-        const dikirim = await Order.findOne({_id: order})
+        const {pesenanId} = req.params;
+        const dikirim = await Order.findOne({_id: pesenanId})
         if(dikirim) {
             dikirim.dikirim= true
-            const update = await dikirim.save();
+            await dikirim.save();
             res.status(200).json({
                 message: 'update sedang dikirim success',
-                data: update
+                data: dikirim
             })
         } else{
             res.status(404)
@@ -125,10 +117,11 @@ export const updateOrder = async (req, res, next) => {
 }
 
 // client menerima notifikasi bahwa barang telah dikirim
-export const getUpdateOrder = async (req, res, next) => {
+exports.getUpdateOrder = async (req, res, next) => {
     try {
-        const order = req.params.orderId;
-        const dikirim = await Order.findOne({_id: order})
+        const {orderId} = req.params;
+        const dikirim = await Order.findOne({_id: orderId})
+        console.log('isi order update', orderId, dikirim)
         if(dikirim.dikirim == true) {
             dikirim.sampai = true;
             dikirim.deliveredAt = Date.now()
@@ -147,9 +140,14 @@ export const getUpdateOrder = async (req, res, next) => {
 }
 
 // log client order
-export const logClientOrder = async (req, res, next) => {
+exports.logClientOrder = async (req, res, next) => {
     try {
-        const logClient = await User.orderId.find({user : req.user._id})
+        const userId = req.user._id;
+        const client = await User.findOne({_id: userId}).populate('orderId')
+        res.status(200).json({
+            message: 'update sedang sampai success',
+            data: client.orderId
+        })
     } catch (error) {
         next(error)
     }

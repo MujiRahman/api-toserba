@@ -4,18 +4,19 @@ const { ObjectId } = mongoose.Schema;
 
 const Order = new schemaa({
     userId:{
-        required: true,
         type: ObjectId,
         ref: 'User'
     },
-    productId:{
-        required: true,
-        type: ObjectId,
-        ref: 'Product'
+    nama:{
+        // required:true,
+        type: String
     },
-    imageId: {
-        type: ObjectId,
-        ref: 'Image'
+    product:{
+        type: String
+    },
+    imageProduct: {
+        type: String,
+        
     },
     namaBarang:{
         required:true,
@@ -23,7 +24,11 @@ const Order = new schemaa({
     },
     jumlahBarang: {
         required:true,
-        type: String
+        type: Number
+    },
+    harga:{
+        require: true,
+        type:Number
     },
     totalHarga:{
         type: Number,
@@ -61,4 +66,4 @@ const Order = new schemaa({
     timestamps: true,
 })
 
-module.exports = mongoose.Model('Order', Order);
+module.exports = mongoose.model('Order', Order);

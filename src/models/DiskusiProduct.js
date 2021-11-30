@@ -2,21 +2,29 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 const { ObjectId } = mongoose.Schema;
 
-const DiskusiProduct = new schema({
+const Diskusi = new schema({
     comment: { 
         type: String, 
-        required: true 
+        required: true, 
     },
     userId: {
         type: ObjectId,
-        required: true,
         ref: 'User',
+    },
+    imageProfil: {
+        type: String,
+    },
+    nama:{
+        type:String
     },
     productId: {
         type: ObjectId,
         ref: 'Product',
-        required: true,
+    },
+    subDiskusiId: {
+        type: ObjectId,
+        ref: 'SubDiskusi'
     }
 })
 
-module.exports = mongoose.model('DiskusiProduct', DiskusiProduct);
+module.exports = mongoose.model('DiskusiProduct', Diskusi);

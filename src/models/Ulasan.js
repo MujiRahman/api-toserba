@@ -2,30 +2,30 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 const { ObjectId } = mongoose.Schema;
 
-const Ulasan = new schema({
-    nama: {
-        type: String,
-        required: true
-    },
+const ulasanProduct = new schema({
     rating: { 
         type: Number,
         required: true 
     },
-    comment: { 
+    ulasan: { 
         type: String, 
         required: true 
     },
     userId: {
         type: ObjectId,
-        required: true,
         ref: 'User',
     },
     productId: {
         type: ObjectId,
         ref: 'Product',
-        required: true,
+    },
+    userNama:{
+        type: String
+    },
+    gambar:{
+        type:String
     }
 
 })
 
-module.exports = mongoose.model('Ulasan', Ulasan)
+module.exports = mongoose.model('Ulasan', ulasanProduct);

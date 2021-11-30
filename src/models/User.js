@@ -11,10 +11,6 @@ const UserSchema = new schema({
     imageProfil: {
         type: String,
     },
-    // imageId: [{
-    //     type: ObjectId,
-    //     ref: 'Image'
-    // }],
     email: {
         type: String,
         required: true,
@@ -26,10 +22,16 @@ const UserSchema = new schema({
         min: 6,
         max: 1024
     },
+    rePassword: {
+        type: String
+    },
     noHp: {
         type: String,
     },
     alamat: {
+        type: String
+    },
+    asalKota: {
         type: String
     },
     createdAt: {
@@ -42,7 +44,11 @@ const UserSchema = new schema({
     }],
     orderId: [{
         type: ObjectId,
-        ref: 'Product'
+        ref: 'Order'
+    }],
+    pesenanId: [{
+        type: ObjectId,
+        ref: 'Order'
     }]
 })
 

@@ -9,12 +9,10 @@ const SubDiskusi = new Schema({
     },
     userId: {
         type: ObjectId,
-        required: true,
         ref: 'User',
     },
-    diskusiProductId: {
-        type: ObjectId,
-        required: true,
+    diskusiId:{
+        type:ObjectId,
         ref: 'DiskusiProduct'
     }
 })

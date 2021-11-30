@@ -3,6 +3,7 @@ require('dotenv/config')
 
 const verifyToken = (req, res, next) => {
     const token = req.header('auth-token')
+    // const token = req.header.authorization
     if(!token) return res.status(400).json({
         status: res.statusCode,
         message: 'Access Denied !'

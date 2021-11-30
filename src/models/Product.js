@@ -8,7 +8,7 @@ const Product = new schema({
         required: true,
         max: 100
     },
-    merek:{
+    asalKota:{
         type: String,
         required:true
     },
@@ -34,6 +34,14 @@ const Product = new schema({
         type:ObjectId,
         ref: 'DiskusiProduct'
     }],
+    rating : {
+        type:Number,
+        default: 0
+    },
+    terjual: {
+        type: Number,
+        default: 0
+    },
     imageId: [{
         type: ObjectId,
         ref: 'Image'
