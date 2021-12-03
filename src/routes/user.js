@@ -15,6 +15,5 @@ router.post('/register', uploadSingle, [
 router.post('/login', authControler.login);
 router.put('/profil', verifyToken, uploadSingle, authControler.updateProfil);
 router.get('/profil', verifyToken, authControler.getUserById);
-router.post('/logout', authControler.logOut)
 
 module.exports = router;
