@@ -50,7 +50,7 @@ app.use((error, req, res, next) => {
     res.status(status).json({message: message, data: data});
 })
 
-mongoose.connect(process.env.DB_CONNECTION2, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
+mongoose.connect(process.env.DB_CONNECTION1, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
 .then(()=> {
     app.listen(process.env.PORT, ()=> console.log('conection success'))
 })
