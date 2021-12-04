@@ -2,8 +2,9 @@ const express = require ('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const cors = require('cors')
-
+require('dotenv/config')
+const app = express();
+app.use(morgan('dev'))
 app.use(cors())
 
 const Image = require('./src/models/Image')
@@ -13,9 +14,7 @@ const apiDiskusi = require('./src/routes/diskusiProduct');
 const apiSubDiskusi = require('./src/routes/subDiskusiProduct')
 const apiUlasan = require('./src/routes/ulasanProduct')
 const apiOrder = require('./src/routes/order')
-require('dotenv/config')
-const app = express();
-app.use(morgan('dev'))
+
 
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json());
