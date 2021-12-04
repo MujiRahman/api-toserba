@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors')
+
+app.use(cors())
+
 const Image = require('./src/models/Image')
 const apiAuth = require('./src/routes/user');
 const apiProduct = require('./src/routes/product');
@@ -14,7 +17,6 @@ require('dotenv/config')
 const app = express();
 app.use(morgan('dev'))
 
-app.use(cors())
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json());
 app.use(express.json())
