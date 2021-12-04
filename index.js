@@ -2,12 +2,12 @@ const express = require ('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const cors = require('cors')
+// const cors = require('cors')
 require('dotenv/config')
 const app = express();
 app.use(morgan('dev'))
 
-app.use(cors())
+// app.use(cors())
 
 const Image = require('./src/models/Image')
 const apiAuth = require('./src/routes/user');
@@ -17,13 +17,20 @@ const apiSubDiskusi = require('./src/routes/subDiskusiProduct')
 const apiUlasan = require('./src/routes/ulasanProduct')
 const apiOrder = require('./src/routes/order')
 
-app.all('*', function(req, res, next) {
-    var origin = req.get('origin'); 
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+const allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
+app.use(allowCrossDomain);
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json());
 app.use(express.json())
