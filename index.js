@@ -2,9 +2,11 @@ const express = require ('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cors = require('cors')
 require('dotenv/config')
 const app = express();
 app.use(morgan('dev'))
+
 app.use(cors())
 
 const Image = require('./src/models/Image')
