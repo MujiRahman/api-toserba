@@ -17,20 +17,27 @@ const apiSubDiskusi = require('./src/routes/subDiskusiProduct')
 const apiUlasan = require('./src/routes/ulasanProduct')
 const apiOrder = require('./src/routes/order')
 
-const allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+// const allowCrossDomain = function(req, res, next) {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
 
-    // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-      res.send(200);
-    }
-    else {
-      next();
-    }
-};
-app.use(allowCrossDomain);
+//     // intercept OPTIONS method
+//     if ('OPTIONS' == req.method) {
+//       res.send(200);
+//     }
+//     else {
+//       next();
+//     }
+// };
+// app.use(allowCrossDomain);
+mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
+// .then(()=> {
+//     app.listen(process.env.PORT, ()=> console.log('conection success'))
+// })
+// .catch((err)=>{
+//     console.log('isi error dimongodb sing angelan nemen coba maneh', err)
+// })
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json());
 app.use(express.json())
@@ -66,10 +73,3 @@ app.use((error, req, res, next) => {
     res.status(status).json({message: message, data: data});
 })
 
-mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
-.then(()=> {
-    app.listen(process.env.PORT, ()=> console.log('conection success'))
-})
-.catch((err)=>{
-    console.log('isi error dimongodb sing angelan nemen coba maneh', err)
-})
