@@ -7,7 +7,7 @@ require('dotenv/config')
 const app = express();
 app.use(morgan('dev'))
 
-app.use(cors())
+
 
 const Image = require('./src/models/Image')
 const apiAuth = require('./src/routes/user');
@@ -32,12 +32,13 @@ const apiOrder = require('./src/routes/order')
 // };
 // app.use(allowCrossDomain);
 mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,})
-// .then(()=> {
-//     app.listen(process.env.PORT, ()=> console.log('conection success'))
-// })
-// .catch((err)=>{
-//     console.log('isi error dimongodb sing angelan nemen coba maneh', err)
-// })
+.then(()=> {
+    app.listen(process.env.PORT, ()=> console.log('conection success'))
+})
+.catch((err)=>{
+    console.log('isi error dimongodb sing angelan nemen coba maneh', err)
+})
+app.use(cors({ origin: "https://api-tokoserba.herokuapp.com/", credentials: true }))
 // app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json());
 app.use(express.json())
